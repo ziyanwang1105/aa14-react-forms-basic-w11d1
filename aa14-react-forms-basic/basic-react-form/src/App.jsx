@@ -24,9 +24,26 @@ function App() {
 
   const [errors, setErrors] = useState([]);
 
+  const validate = () => {
+    const errors = [];
+    if (listing.name.length === 0) errors.push("Name can't be empty");
+    if (listing.email.length === 0) errors.push("Email can't be empty");
+    if (listing.email && listing.email 
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      ) === null ) errors.push("Email isn't properly formatted");
+    if (listing.phoneNumber && listing.phoneNumber.match(
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+    ) === null) errors.push("Phone number isn't properly formatted");
+    if (listing.phoneNumber && !listing.phoneType) errors.push("Need to select phone type");
+    if (listing.bio && listing.bio.length > 280) errors.push("Bio is too long; max 280 characters");
+    return errors;
+  }
+
   const handleSubmit = e => {
     e.preventDefault();
-    const errors = [];
+    const errors = validate();
 
     if (errors.length > 0) {
       setErrors(errors);
@@ -50,6 +67,9 @@ function App() {
     <div>
       <h1> Hello from App </h1>
       <h2>Form</h2>
+      {errors.length > 0 && (
+                errors.map((err, idx) => <p key={idx}>{err}</p>)
+            )}
       <form onSubmit={handleSubmit}>
         <label>Name:
             <input placeholder="Name" value={listing.name} onChange={handlechange('name')} />
@@ -68,6 +88,7 @@ function App() {
         <br></br>
         <label>Phone type:
             <select onChange={handlechange('phoneType')}>
+              <option value="">Select type</option>
               <option value="Home">Home</option>
               <option value="Work">Work</option>
               <option value="Mobile">Mobile</option>
