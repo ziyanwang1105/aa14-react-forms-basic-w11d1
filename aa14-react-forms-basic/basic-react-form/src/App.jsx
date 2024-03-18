@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function App() {
-  
+
   const [listing, setListing] = useState({
     name: '',
     email: '',
@@ -11,11 +11,15 @@ function App() {
     bio: '',
     signup: false
   })
-  
-  const handlechange = key => e => {
 
-      setListing(old => ({...old, [key]: e.target.value}));
-      
+  const handlechange = key => e => {
+      console.log(e.target.value)
+      if(key === 'signup'){
+        setListing(old =>({...old, [key]: !old.signup}))
+      }else{
+        setListing(old => ({...old, [key]: e.target.value}));
+      }
+
   }
 
   const [errors, setErrors] = useState([]);
@@ -55,37 +59,39 @@ function App() {
         <label>Email:
             <input placeholder="Email" value={listing.email} onChange={handlechange('email')}/>
         </label>
-        
+
         <br></br>
         <label>Phone number:
             <input placeholder="Phone number" value={listing.phoneNumber} onChange={handlechange('phoneNumber')}/>
         </label>
-        
+
         <br></br>
         <label>Phone type:
-            <select>
+            <select onChange={handlechange('phoneType')}>
               <option value="Home">Home</option>
               <option value="Work">Work</option>
               <option value="Mobile">Mobile</option>
             </select>
         </label>
-        
+
         <br></br>
         <label name="staff">Staff:
-            <input name="staff" type="radio"/><label>Instructor</label>
-            <input name="staff" type="radio"/><label>Student</label>
+        <div onChange = {handlechange('staff')}>
+            <input name="staff" value= "instructor" type="radio"/><label>Instructor</label>
+            <input name="staff" value="student" type="radio"/><label>Student</label>
+        </div>
         </label>
-        
+
         <br></br>
         <label>Bio
           <textarea value={listing.bio} onChange={handlechange('bio')}></textarea>
         </label>
-        
+
         <br></br>
         <label>Sign up for email notifications
-          <input type="checkbox" />
+          <input type="checkbox" checked={listing.signup} onChange={handlechange('signup')}/>
         </label>
-        
+
         <br></br>
         <input type="submit" value="Submit"></input>
       </form>
